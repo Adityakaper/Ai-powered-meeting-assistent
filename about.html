@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About - AI Meeting Summarizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="bg-white text-slate-200 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+<nav class="flex justify-between items-center px-8 py-4 bg-blue-900 backdrop-blur-lg shadow-lg">
+    <h1 class="text-xl font-bold text-blue-400">AI <span class="text-white">Meeting Summarizer</span></h1>
+    <ul class="flex gap-6 text-sm text-slate-300">
+      <li><a href="/" class="{% if current_page == 'home' %}text-blue-400 font-semibold{% else %}hover:text-blue-400{% endif %}">Home</a></li>
+      <li><a href="/chat" class="{% if current_page == 'chat' %}text-blue-400 font-semibold{% else %}hover:text-blue-400{% endif %}">Chat</a></li>
+      <li><a href="/about" class="{% if current_page == 'about' %}text-blue-400 font-semibold{% else %}hover:text-blue-400{% endif %}">About</a></li>
+    </ul>
+    <div class="flex gap-3">
+      <button class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-800">Login</button>
+      <button class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white">Sign Up</button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col items-center justify-start px-8 py-12">
+    <div class="max-w-4xl bg-[#1e293b] rounded-2xl p-8 shadow-2xl">
+      <h2 class="text-3xl font-bold text-blue-400 mb-4">About the Project</h2>
+      <p class="text-slate-300 leading-relaxed mb-6">
+        <strong>AI Meeting Summarizer</strong> is a smart web application designed to transform the way professionals handle meeting recordings.
+        It automatically converts audio recordings into accurate text transcripts, generates concise summaries, and provides an interactive AI-powered
+        chatbot for deeper discussion and insights — all in one elegant interface.
+      </p>
+
+      <h3 class="text-2xl font-semibold text-blue-300 mb-3">🎯 Project Objective</h3>
+      <p class="text-slate-300 mb-6">
+        The goal of this project is to simplify meeting documentation, improve productivity, and assist teams in extracting key insights from
+        long discussions. It eliminates manual note-taking by combining state-of-the-art speech recognition and natural language processing technologies.
+      </p>
+
+      <h3 class="text-2xl font-semibold text-blue-300 mb-3">⚙️ Key Features</h3>
+      <ul class="list-disc list-inside text-slate-300 mb-6 space-y-2">
+        <li>🎧 <strong>Audio Transcription:</strong> Converts meeting recordings to text using Whisper ASR.</li>
+        <li>🧾 <strong>Automatic Summarization:</strong> Generates clear, concise summaries with BART Transformer.</li>
+        <li>💬 <strong>Chat Assistant:</strong> Allows users to ask follow-up questions about their meeting content.</li>
+        <li>📁 <strong>Drag & Drop Upload:</strong> Supports MP3, WAV, MP4, and more (up to 100MB).</li>
+        <li>🌐 <strong>Modern Web UI:</strong> Built with Flask, TailwindCSS, and a clean dark theme.</li>
+      </ul>
+
+      <h3 class="text-2xl font-semibold text-blue-300 mb-3">🧠 Technology Stack</h3>
+      <div class="grid grid-cols-2 gap-4 text-slate-300 mb-6">
+        <div>
+          <p><strong>Frontend:</strong> HTML5, TailwindCSS, JavaScript</p>
+          <p><strong>Backend:</strong> Flask (Python)</p>
+        </div>
+        <div>
+          <p><strong>AI Models:</strong> Whisper, BART, Mistral via Ollama</p>
+          <p><strong>Storage:</strong> JSON-based lightweight DB</p>
+        </div>
+      </div>
+
+      <h3 class="text-2xl font-semibold text-blue-300 mb-3">👨‍💻 Developed By</h3>
+      <p class="text-slate-300 mb-6">
+        This project is developed by <strong>Aditya Kaper</strong> and team as part of an AI-based academic initiative
+        to explore real-world applications of deep learning in productivity tools.
+      </p>
+
+      <h3 class="text-2xl font-semibold text-blue-300 mb-3">🚀 Future Enhancements</h3>
+      <ul class="list-disc list-inside text-slate-300 space-y-2 mb-8">
+        <li>📅 Integration with Google Calendar & Teams for auto-recording import.</li>
+        <li>📊 Visual dashboards for sentiment & keyword analysis.</li>
+        <li>☁️ Cloud deployment and multi-user workspace management.</li>
+        <li>🔒 Secure authentication and encrypted storage.</li>
+      </ul>
+
+      <p class="text-center text-slate-400 text-sm italic">
+        © 2025 AI Meeting Summarizer. All rights reserved. Built with ❤️ using Flask and OpenAI Whisper.
+      </p>
+    </div>
+  </main>
+</body>
+</html>

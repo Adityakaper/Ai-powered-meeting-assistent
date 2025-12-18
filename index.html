@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Meeting Summarizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="bg-white text-slate-200 min-h-screen flex flex-col">
+
+ <!-- Navbar -->
+<nav class="flex justify-between items-center px-8 py-4 bg-blue-900 backdrop-blur-lg shadow-lg">
+    <h1 class="text-xl font-bold text-blue-400">AI <span class="text-white">Meeting Summarizer</span></h1>
+    <ul class="flex gap-6 text-sm text-slate-300">
+      <li><a href="/" class="{% if current_page == 'home' %}text-blue-400 font-semibold{% else %}hover:text-blue-400{% endif %}">Home</a></li>
+      <li><a href="/chat" class="{% if current_page == 'chat' %}text-blue-400 font-semibold{% else %}hover:text-blue-400{% endif %}">Chat</a></li>
+      <li><a href="/about" class="{% if current_page == 'about' %}text-blue-400 font-semibold{% else %}hover:text-blue-400{% endif %}">About</a></li>
+    </ul>
+    <div class="flex gap-3">
+      <button class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-800">Login</button>
+      <button class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white">Sign Up</button>
+    </div>
+  </nav>  
+
+  <!-- Main Section -->
+  <main class="flex-1 flex flex-col items-center justify-center text-center p-8">
+    <div class="bg-[#1e293b] rounded-2xl shadow-2xl p-10 max-w-3xl w-full">
+      <h2 class="text-2xl md:text-3xl font-semibold text-blue-400 mb-2">Transform Your Meetings with AI</h2>
+      <p class="text-slate-400 mb-8">Upload your meeting recordings and get instant transcripts, summaries, and insights powered by advanced AI technology.</p>
+
+      <form action="/upload" method="post" enctype="multipart/form-data" class="border-2 border-dashed border-slate-600 rounded-2xl p-10 flex flex-col items-center justify-center hover:border-blue-500 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 12V4m0 8l-3-3m3 3l3-3" />
+        </svg>
+        <p class="text-lg text-slate-300 mb-3">Drag and drop your file here</p>
+        <p class="text-sm text-slate-500 mb-4">or</p>
+        <label class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg cursor-pointer">
+          Choose File
+          <input type="file" name="audio_file" accept="audio/*,video/mp4" class="hidden" onchange="this.form.submit()">
+        </label>
+        <p class="text-xs text-slate-500 mt-4">Supports MP3, MP4, WAV, M4A files up to 100MB</p>
+      </form>
+
+      {% if transcript %}
+      <div id="summary" class="mt-10 text-left">
+        <h3 class="text-lg font-semibold text-blue-400 mb-2">📄 Transcript</h3>
+        <div class="bg-slate-800 p-4 rounded-xl text-slate-300 whitespace-pre-wrap">{{ transcript }}</div>
+      </div>
+      {% endif %}
+
+      {% if summary %}
+      <div class="mt-6 text-left">
+        <h3 class="text-lg font-semibold text-blue-400 mb-2">📝 Summary</h3>
+        <div class="bg-slate-800 p-4 rounded-xl text-slate-300 whitespace-pre-wrap">{{ summary }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </main>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+
+    function addMessage(text, who = "bot") {
+      const div = document.createElement("div");
+      div.className = "rounded-lg px-3 py-2 max-w-[80%] " + (who === "user" ? "bg-blue-600 text-white self-end ml-auto" : "bg-slate-800 text-slate-200");
+      div.textContent = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const msg = userInput.value.trim();
+      if (!msg) return;
+      addMessage(msg, "user");
+      userInput.value = "";
+      const loading = document.createElement("div");
+      loading.className = "bg-slate-800 text-slate-500 italic px-3 py-2 rounded-lg";
+      loading.textContent = "Thinking...";
+      chatBox.appendChild(loading);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      try {
+        const res = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg }) });
+        const data = await res.json();
+        loading.remove();
+        addMessage(data.response || "No response.", "bot");
+      } catch {
+        loading.remove();
+        addMessage("Error contacting server.", "bot");
+      }
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => e.key === "Enter" && sendMessage());
+    addMessage("👋 Hi! Upload an audio file to generate transcript & summary, then ask me anything.");
+  </script>
+</body>
+</html>

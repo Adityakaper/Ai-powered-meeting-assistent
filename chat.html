@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Chat Assistant - AI Meeting Summarizer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body class="bg-white text-slate-200 min-h-screen flex flex-col">
+
+  <!-- Navbar (same as index) -->
+<nav class="flex justify-between items-center px-8 py-4 bg-blue-900 backdrop-blur-lg shadow-lg">
+    <h1 class="text-xl font-bold text-blue-400">AI <span class="text-white">Meeting Summarizer</span></h1>
+    <ul class="flex gap-6 text-sm text-slate-300">
+      <li><a href="/" class="{% if current_page == 'home' %}text-blue-400 font-semibold{% else %}hover:text-blue-400{% endif %}">Home</a></li>
+      <li><a href="/chat" class="{% if current_page == 'chat' %}text-blue-400 font-semibold{% else %}hover:text-blue-400{% endif %}">Chat</a></li>
+      <li><a href="/about" class="{% if current_page == 'about' %}text-blue-400 font-semibold{% else %}hover:text-blue-400{% endif %}">About</a></li>
+    </ul>
+    <div class="flex gap-3">
+      <button class="px-4 py-2 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-800">Login</button>
+      <button class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white">Sign Up</button>
+    </div>
+  </nav>
+
+  <!-- Chat Section -->
+  <main class="flex-1 flex flex-col items-center justify-center px-6 py-10">
+    <div class="bg-[#1e293b] p-6 rounded-2xl shadow-2xl w-full max-w-3xl">
+      <h3 class="text-xl font-semibold text-blue-400 mb-3">🤖 Chat Assistant</h3>
+      <p class="text-slate-400 mb-5 text-sm">Ask follow-up questions or request insights about your uploaded meeting.</p>
+
+      <div id="chat-box" class="h-80 overflow-y-auto bg-slate-900 p-4 rounded-xl mb-4 space-y-2"></div>
+      <div class="flex gap-2">
+        <input id="user-input" type="text" placeholder="Ask about the meeting..." class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <button id="send-btn" class="bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-white">Send</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+
+    function addMessage(text, who = "bot") {
+      const div = document.createElement("div");
+      div.className = "rounded-lg px-3 py-2 max-w-[80%] " + (who === "user" ? "bg-blue-600 text-white self-end ml-auto" : "bg-slate-800 text-slate-200");
+      div.textContent = text;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const msg = userInput.value.trim();
+      if (!msg) return;
+      addMessage(msg, "user");
+      userInput.value = "";
+      const loading = document.createElement("div");
+      loading.className = "bg-slate-800 text-slate-500 italic px-3 py-2 rounded-lg";
+      loading.textContent = "Thinking...";
+      chatBox.appendChild(loading);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      try {
+        const res = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: msg }) });
+        const data = await res.json();
+        loading.remove();
+        addMessage(data.response || "No response.", "bot");
+      } catch {
+        loading.remove();
+        addMessage("Error contacting server.", "bot");
+      }
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => e.key === "Enter" && sendMessage());
+    addMessage("👋 Hi! Ask me anything about your last meeting summary or transcript.");
+  </script>
+</body>
+</html>
